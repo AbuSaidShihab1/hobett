@@ -1,0 +1,51 @@
+import React, { useState, useEffect } from "react";
+import { FaHeart } from "react-icons/fa6";
+import { RiPokerDiamondsLine } from "react-icons/ri";
+import { BsSuitSpade, BsSuitClub } from "react-icons/bs";
+import "tailwindcss/tailwind.css";
+
+const cards = [
+  { id: 1, icon: <BsSuitClub className="text-3xl text-gray-800" /> },
+  { id: 2, icon: <RiPokerDiamondsLine className="text-3xl text-red-500" /> },
+  { id: 3, icon: <BsSuitSpade className="text-3xl text-gray-800" /> },
+  { id: 4, icon: <FaHeart className="text-3xl text-red-500" /> },
+];
+
+const AnimatedCards = () => {
+  const [cardOrder, setCardOrder] = useState(cards);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCardOrder((prevOrder) => {
+        const newOrder = [...prevOrder];
+        newOrder.push(newOrder.shift()); // Move the first card to the end
+        return [...newOrder];
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="relative w-56 h-40">
+        {cardOrder.map((card, index) => (
+          <div
+            key={card.id}
+            className="absolute w-36 h-52 bg-white rounded-lg shadow-lg flex flex-col items-center justify-center border-2 border-gray-700 transition-transform duration-500 ease-in-out"
+            style={{
+              transform: `rotate(${index * -10}deg) translate(${index * 20}px, ${index * 5}px)`,
+              zIndex: 4 - index,
+            }}
+          >
+            <div className="absolute top-2 left-2 text-sm">{card.icon}</div>
+            <div className="absolute top-2 right-2 text-sm">{card.icon}</div>
+            <div className="text-4xl mt-4">{card.icon}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default AnimatedCards;

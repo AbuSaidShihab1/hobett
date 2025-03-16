@@ -1,0 +1,283 @@
+    {popupOpen && (
+        <div className="fixed inset-0 flex items-center z-[1000] justify-center bg-black bg-opacity-50">
+          <div className="bg-gray-900 text-white p-6 rounded-lg w-96 shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Wallet</h2>
+              <button onClick={() => setPopupOpen(false)} className="text-white text-xl">✕</button>
+            </div>
+            {!selectedMethod ? (
+              <>
+                <div className="flex bg-gray-800 p-1 rounded-lg mb-4">
+                  <button className={`flex-1 py-2 rounded-lg ${selectedTab === "deposit" ? "bg-yellow-500 text-black font-bold" : "text-white"}`} onClick={() => setSelectedTab("deposit")}>Deposit</button>
+                  <button className={`flex-1 py-2 rounded-lg ${selectedTab === "withdraw" ? "bg-yellow-500 text-black font-bold" : "text-white"}`} onClick={() => setSelectedTab("withdraw")}>Withdraw</button>
+                </div>
+                <motion.div
+                  key={selectedTab}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-3 gap-4"
+                >
+                  {paymentMethods[selectedTab].map((method, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-gray-800 p-3 rounded-lg flex flex-col items-center justify-center border border-gray-700 cursor-pointer"
+                      onClick={() => setSelectedMethod(method)}
+                    >
+                      <img src={method.src} alt={method.name} className="w-12 h-12 mb-2" />
+                      <span className="text-xs text-white font-medium text-center">{method.name}</span>
+                    </div>
+                  ))}
+                </motion.div>
+              </>
+            ) : (
+             <div>
+                {paymentSuccess && <Confetti width={width} height={height} />}
+                {
+                  selectedTab=="deposit" ? <>
+                       {
+                active_tab=="make_payment" ?
+                 <form onSubmit={handle_paymnet_submit}>
+                <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+     
+                <label className="text-sm mt-4 block">Amount (400৳ - 20000৳)</label>
+                <input
+                  type="number"
+                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                  value={transactionAmount}
+                  onChange={(e) => setTransactionAmount(e.target.value)}
+                  placeholder="Enter amount or select below"
+                />
+          
+                <div className="flex space-x-2 mt-2">
+                  {presetAmounts.map((value) => (
+                    <button
+                      key={value}
+                      className={`flex-1 py-2 text-[14px] rounded-lg font-bold ${
+                        transactionAmount == value
+                          ? "bg-yellow-500 text-black"
+                          : "bg-gray-700 text-white"
+                      }`}
+                      onClick={() => handlePresetAmount(value)}
+                    >
+                      ৳ {value}
+                    </button>
+                  ))}
+                </div>
+          
+                {/* Submit Button */}
+                <button
+                  disabled={loading}
+                  className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-yellow-400 hover:bg-yellow-500 transition duration-300"
+                >
+                  {loading ? (
+                    <div className="flex justify-center items-center">
+                      <svg
+                        className="animate-spin h-5 w-5 mr-2 text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Submit Payment"
+                  )}
+                </button>
+                 </form>:<form onSubmit={handleSubmit}>
+              <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+              <label className="text-sm mt-4 block">Agent Number</label>
+              <div className="flex items-center space-x-2 mb-4 mt-2 ">
+                <input
+                  type="text"
+                  className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
+                  value={agentNumber}
+                  onChange={(e) => setAgentNumber(e.target.value)}
+                />
+                <div
+                  onClick={handleCopy}
+                  className="px-[12px] cursor-pointer rounded py-[12px] h-full bg-gray-700 text-white"
+                >
+                  {isCopied ? (
+                    <FiCheck className="text-green-500" />
+                  ) : (
+                    <FiClipboard />
+                  )}
+                </div>
+              </div>
+              <label className="text-sm">Phone Number</label>
+              <input
+                type="text"
+                className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                placeholder="+880"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+             <label className="text-sm mt-4 block">Transiction Id</label>
+              <input
+                type="text"
+                className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                value={transactionid}
+                onChange={(e) => settransactionid(e.target.value)}
+                placeholder="Enter amount or select below"
+              />
+        
+              <label className="text-sm mt-4 block">Amount (400৳ - 20000৳)</label>
+              <input
+                type="number"
+                className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                value={transactionAmount}
+                onChange={(e) => setTransactionAmount(e.target.value)}
+                placeholder="Enter amount or select below"
+              />
+        
+              <div className="flex space-x-2 mt-2">
+                {presetAmounts.map((value) => (
+                  <button
+                    key={value}
+                    className={`flex-1 py-2 text-[14px] rounded-lg font-bold ${
+                      transactionAmount == value
+                        ? "bg-yellow-500 text-black"
+                        : "bg-gray-700 text-white"
+                    }`}
+                    onClick={() => handlePresetAmount(value)}
+                  >
+                    ৳ {value}
+                  </button>
+                ))}
+              </div>
+        
+              {/* Submit Button */}
+              <button
+                disabled={loading}
+                className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-yellow-400 hover:bg-yellow-500 transition duration-300"
+              >
+                {loading ? (
+                  <div className="flex justify-center items-center">
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"
+                      ></path>
+                    </svg>
+                    Processing...
+                  </div>
+                ) : (
+                  "Submit Payment"
+                )}
+              </button>
+                 </form>
+                 }
+                  </>: <form onSubmit={handlewithdraw}>
+                <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                <label className="text-sm mt-4 block">Account Number</label>
+              <div className="flex items-center space-x-2 mb-4 mt-2 ">
+                <input
+                  type="text"
+                  className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
+                  placeholder="Enter your number"
+                  value={payeer_account}
+                  onChange={(e)=>{setpayeer_account(e.target.value)}}
+                />
+              </div>
+                <label className="text-sm mt-4 block">Amount (300৳ - 20000৳)</label>
+                <input
+                  type="number"
+                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                  value={transactionAmount}
+                  onChange={(e) => setTransactionAmount(e.target.value)}
+                  placeholder="Enter amount or select below"
+                />
+          
+                <div className="flex space-x-2 mt-2">
+                  {presetAmounts.map((value) => (
+                    <div
+                      key={value}
+                      className={`flex-1 py-2 text-center cursor-pointer text-[14px] rounded-lg font-bold ${
+                        transactionAmount == value
+                          ? "bg-yellow-500 text-black"
+                          : "bg-gray-700 text-white"
+                      }`}
+                      onClick={() => handlePresetAmount(value)}
+                    >
+                      ৳ {value}
+                    </div>
+                  ))}
+                </div>
+          
+                {/* Submit Button */}
+                <button
+                  disabled={loading}
+                  className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-yellow-400 hover:bg-yellow-500 transition duration-300"
+                >
+                  {loading ? (
+                    <div className="flex justify-center items-center">
+                      <svg
+                        className="animate-spin h-5 w-5 mr-2 text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Submit Payment"
+                  )}
+                </button>
+                  </form>
+                }
+               
+             </div>
+            )}
+            {selectedMethod && (
+              <div className="mt-4 flex justify-start">
+                <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={() => setSelectedMethod(null)}>
+                  <IoIosArrowBack className="text-white" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
