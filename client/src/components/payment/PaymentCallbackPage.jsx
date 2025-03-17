@@ -70,7 +70,7 @@ useEffect(()=>{
         const { data: userResponse } = await axios.get(`${base_url}/auth/user/${user_info?._id}`, {
           headers: { 'Authorization': localStorage.getItem('token') }
         });
-
+          // hello deposit
         if (userResponse.success) {
           const { data: paymentResult } = await executePaymentCallback();
           console.log('paymentResult', paymentResult);
