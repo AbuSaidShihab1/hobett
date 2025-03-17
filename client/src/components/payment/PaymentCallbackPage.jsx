@@ -79,7 +79,7 @@ useEffect(()=>{
             payment_type: "Deposit",
             post_balance: userResponse.user.balance,
             transaction:transactionData.paymentId,
-            amount: transactionData.receivedAmount,
+            amount:transactionData.receivedAmount ? transactionData.receivedAmount : transactionData.expectedAmount,
             payment_method: transactionData.provider,
             status: transactionData.status === "pending" 
             ? "failed" 
@@ -107,22 +107,25 @@ useEffect(()=>{
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900 py-10">
       {showProgress ? (
+        <div>
+            <h1 className='text-center text-white font-[500] text-[18px] xl:text-[20px] font-bai mb-[10px]'>Payment Is Processing...</h1>
         <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-500 transition-all duration-500"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
+        </div>
       ) : (
         loading ? 'Loading! Please wait...' : (
           <div className="w-full max-w-4xl px-4 sm:px-6 md:px-8">
             <div className="text-center mb-6">
-              <h1 className="text-3xl font-semibold text-white">Payment Status</h1>
-              <p className="text-lg text-gray-400">Your payment details are below</p>
+              <h1 className="text-[20px] xl:text-3xl font-semibold text-white">Payment Status</h1>
+              <p className="text-[16px] xl:text-lg text-gray-400">Your payment details are below</p>
             </div>
             <div className="bg-gray-800 rounded-lg shadow-lg p-6">
               <div className="flex justify-between items-center mb-4">
-                <span className="ml-2 text-xl font-semibold text-white">Payment Status: <span className={`text-${status === 'cancel' ? 'red' : 'green'}-500`}>{transaction_info.status}</span></span>
+                <span className="text-lg xl:text-xl font-semibold text-white">Payment Status: <span className={`text-${status === 'cancel' ? 'red' : 'green'}-500`}>{transaction_info.status}</span></span>
                 <span className="text-sm text-gray-400">{moment(transaction_info.createdAt).format("MMMM Do YYYY, h:mm A")}</span>
               </div>
               <div className="space-y-4">
