@@ -24,6 +24,8 @@ app.use(cors(
             "http://localhost:5174",
             "http://localhost:5175",
             "http://localhost:5176",
+            "https://website.eassypay.com",
+            "https://data.eassypay.com",
             "*",
           ], // Specify the allowed origin
         methods: ["GET", "POST", "PUT", "DELETE","PATCH","OPTIONS"], // Specify allowed methods

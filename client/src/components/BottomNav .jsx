@@ -12,7 +12,7 @@ const BottomNav = () => {
     { id: "menu", label: "Menu", icon: <FaBars />, action: () => setSidebarOpen(true) },
     { id: "sports", label: "Sports", icon: <FaFutbol /> },
     { id: "casino", label: "Casino", icon: <SiLegacygames />, isCenter: true },
-    { id: "esports", label: "Esports", icon: <TbDeviceGamepad2 /> },
+    { id: "bonus", label: "Bonus", icon: <TbDeviceGamepad2 /> },
     { id: "chat", label: "Chat", icon: <FaComments /> },
   ];
 

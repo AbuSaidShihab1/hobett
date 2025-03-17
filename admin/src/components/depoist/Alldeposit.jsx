@@ -134,6 +134,7 @@ const Alldeposit = () => {
                         <span
                           className={`px-2 py-1 rounded-md text-sm
                             ${transaction.status === "success" ? "bg-green-100 text-green-600" : ""}
+                            ${transaction.status === "fully paid" ? "bg-green-100 text-green-600" : ""}
                             ${transaction.status === "failed" ? "bg-red-100 text-red-600" : ""}
                             ${transaction.status === "pending" ? "bg-yellow-100 text-yellow-600" : ""}
                           `}

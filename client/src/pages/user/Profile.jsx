@@ -309,7 +309,7 @@ const filteredTransactions = transactionsData.filter((transaction) =>
     <main className="flex-1 lg:p-10 shadow-md xl:p-5">
       {activeSection === "personal-info" && (
         <div>
-          <h2 className="text-2xl font-bold mb-5">Personal info</h2>
+          <h2 className="text-[18px] xl:text-2xl font-bold mb-5">Personal info</h2>
           <form className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label className="block text-sm">Username</label>

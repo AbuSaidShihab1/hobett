@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useSearchParams } from "react-router-dom";
 import moment from "moment";
+import { FiLoader } from "react-icons/fi";
 
 function PaymentCallbackPage() {
   const base_url = import.meta.env.VITE_API_KEY_Base_URL;
   const base_url2 = import.meta.env.VITE_API_KEY_Base_URL2;
-
   const [paymentparams] = useSearchParams();
   const user_info = JSON.parse(localStorage.getItem("user"));
 
-  const [transaction_info, set_transaction_info] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [transaction_info, set_transaction_info] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [amount, set_amount] = useState();
-  const [user_details,set_userdetails]=useState([])
-  
-  const transactionId = paymentparams.get("paymentID"); // Get query param
+  const transactionId = paymentparams.get("paymentID");
   const status = paymentparams.get("status");
-
+  const [progress, setProgress] = useState(0);
   const executePaymentCallback = async () => {
     try {
       const response = await axios.post(`${base_url2}/api/payment/p2c/bkash/callback`, {
@@ -34,54 +32,82 @@ function PaymentCallbackPage() {
       return false;
     }
   };
-
+  useEffect(()=>{
+    executePaymentCallback();
+  },[])
   const user_money_info = async () => {
-    setLoading(true); // Start loading
-    console.log("Loading started...");
-  
     try {
-      // Fetch transaction status
       const { data: transactionResponse } = await axios.get(`${base_url2}/api/user/transaction-status/${transactionId}`);
-  
+      
       if (transactionResponse.success) {
         const transactionData = transactionResponse.data;
         set_transaction_info(transactionData);
         set_amount(transactionData.expectedAmount);
-       console.log(transactionData)
-        // Fetch user details
-        const res = await axios.get(`${base_url}/auth/user/${user_info?._id}`, {
-          headers: { Authorization: localStorage.getItem("token") },
+
+        const { data: userResponse } = await axios.get(`${base_url}/auth/user/${user_info?._id}`, {
+          headers: { 'Authorization': localStorage.getItem('token') }
         });
-  
-        if (res.data.success) {
-           console.log("hello",res.data.user)
-           set_userdetails(res.data.user);
-           axios.post(`${base_url}/user/create-transaction`,{payment_type:"Deposit",post_balance:res.data.user.balance,transaction:transactionData.paymentId,amount:transactionData.expectedAmount,payment_method:transactionData.provider,status:transactionData.status === "pending" ? "failed" : status,customer_id:user_info._id})
-           .then((res)=>{
-             console.log("Helllllo",res)
-           }).catch((err)=>{
-             console.log(err)
-           })
+
+        if (userResponse.success) {
+          const { data: paymentResult } = await executePaymentCallback();
+          console.log('paymentResult', paymentResult);
+
+          const { data: createTransactionResponse } = await axios.post(`${base_url}/user/create-transaction`, {
+            payment_type: "Deposit",
+            post_balance: userResponse.user.balance,
+            transaction: paymentResult.paymentId,
+            amount: paymentResult.receivedAmount,
+            payment_method: paymentResult.provider,
+            status: paymentResult.status === "pending" ? "failed" : transactionData.status,
+            customer_id: user_info._id,
+          });
+
+          if (createTransactionResponse?.transaction) {
+            console.log('createTransactionResponse', createTransactionResponse?.transaction);
+            set_transaction_info(prev => ({ ...prev, ...createTransactionResponse.transaction }));
+          }
         }
       }
     } catch (error) {
       console.error("Error in user_money_info:", error);
     } finally {
-      console.log("Setting loading to false...");
-      setLoading(false); // Ensure loading stops
+      setLoading(false);
     }
   };
 
+
+
   useEffect(() => {
-    if (transactionId && status) {
+    let progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + (100 / 30);
+      });
+    }, 1000);
+
+    let userMoneyTimeout = setTimeout(() => {
       user_money_info();
-    }
-  }, [transactionId, status]); // Dependencies added to re-fetch on change
+    }, 30000);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearTimeout(userMoneyTimeout);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center font-bai items-center bg-gray-900 py-10">
       {loading ? (
-        "Loading! Please wait..."
+        <div className="text-center">
+          <FiLoader className="animate-spin text-indigo-500 text-6xl mb-4" />
+          <p className="text-lg text-gray-300">Processing Payment... Please wait</p>
+          <div className="w-64 h-2 bg-gray-700 rounded-full mt-4">
+            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${progress}%` }}></div>
+          </div>
+        </div>
       ) : (
         <div className="w-full max-w-4xl px-4 sm:px-6 md:px-8">
           <div className="text-center mb-6">
@@ -89,17 +115,16 @@ function PaymentCallbackPage() {
             <p className="text-lg text-gray-400">Your payment details are below</p>
           </div>
 
-          {/* Payment Card */}
           <div className="bg-gray-800 rounded-lg shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center">
                 {status === "cancel" ? (
                   <>
                     <div className="bg-red-500 animate-pulse text-white rounded-full p-2">
-                      <i className="fas fa-times-circle"></i>
+                      <i className="fas fa-check-circle"></i>
                     </div>
                     <span className="ml-2 text-xl font-semibold text-white">
-                      Payment Status: <span className="text-red-500">{status}</span>
+                      Payment Status: <span className='text-red-500'>{status}</span>
                     </span>
                   </>
                 ) : (
@@ -108,19 +133,14 @@ function PaymentCallbackPage() {
                       <i className="fas fa-check-circle"></i>
                     </div>
                     <span className="ml-2 text-xl font-semibold text-white">
-                      Payment Status: <span className="text-green-500">{transaction_info.status}</span>
+                      Payment Status: <span className='text-green-500'>{transaction_info.status}</span>
                     </span>
                   </>
                 )}
               </div>
-              <span className="text-sm text-gray-400">
-                {transaction_info.createdAt
-                  ? moment(transaction_info.createdAt).format("MMMM Do YYYY, h:mm A")
-                  : ""}
-              </span>
+              <span className="text-sm text-gray-400">{moment(transaction_info.createdAt).format("MMMM Do YYYY, h:mm A")}</span>
             </div>
 
-            {/* Payment Info */}
             <div className="space-y-4">
               <div className="flex justify-between text-gray-400">
                 <span>Transaction ID:</span>
@@ -136,19 +156,15 @@ function PaymentCallbackPage() {
               </div>
             </div>
 
-            {/* Status Badge */}
             <div className="mt-6 flex justify-center">
-              {transaction_info.status === "Success" || transaction_info.status === "fully paid" ? (
-                <span className="px-4 py-2 text-sm text-white bg-green-500 rounded-full">
-                  Payment Successful
-                </span>
+              {transaction_info.status === 'Success' || transaction_info.status === 'fully paid' ? (
+                <span className="px-4 py-2 text-sm text-white bg-green-500 rounded-full">Payment Successful</span>
               ) : (
                 <span className="px-4 py-2 text-sm text-white bg-red-500 rounded-full">Payment Failed</span>
               )}
             </div>
           </div>
 
-          {/* Back to Dashboard Button */}
           <div className="mt-6 text-center">
             <a
               href="/"

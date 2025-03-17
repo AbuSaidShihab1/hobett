@@ -7,8 +7,10 @@ import { NavLink, useNavigate } from 'react-router';
 import AuthModal from './modal/AuthModal';
 import { BsChatDotsFill } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { IoWalletOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import Confetti from 'react-confetti';
+import { PiCoinsDuotone } from "react-icons/pi";
 import { FaAngleDown } from "react-icons/fa";
 import { useWindowSize } from "react-use"; // To get screen size for confetti
 import { nanoid } from "nanoid";
@@ -24,6 +26,7 @@ import BottomNav from './BottomNav ';
 import Logo2 from './Logo2';
 import { TbLogout } from "react-icons/tb";
 import { RxRocket } from "react-icons/rx";
+import spin_img from "../assets/spin.png"
 // Reducer function for managing sidebar state
 function sidebarReducer(state, action) {
   switch (action.type) {
@@ -263,7 +266,6 @@ const Header = () => {
         setPaymentSuccess(true); // Trigger confetti animation
         setTimeout(() => setPaymentSuccess(false), 5000); // Hide confetti after 5s
         // setPopupOpen(false)
-        
       } else {
         toast.error(res.data.message);
       }
@@ -313,7 +315,7 @@ const Header = () => {
 
     // If all validations pass
     try {
-      const {data} = await axios.post(`${base_url2}/api/payment/bkash`,{mid:"merchant1",payerId:user_details.player_id,amount:transactionAmount,currency:"BDT",redirectUrl:`${frontend_url}`,orderId:orderId,callbackUrl:`${frontend_url}/callback-payment`});
+      const {data} = await axios.post(`${base_url2}/api/payment/bkash`,{mid:"merchant1",payerId:user_details.player_id,amount:transactionAmount,currency:"BDT",redirectUrl:`http://localhost:5173`,orderId:orderId,callbackUrl:`http://localhost:5173/callback-payment`});
       setProgress(70); // Update progress on successful request
       console.log(data)
       if (data.success) {
@@ -568,7 +570,7 @@ const Header = () => {
             },
           }}
         />
-        <div className=" fixed bottom-6 right-6 z-50">
+        {/* <div className=" fixed bottom-6 right-6 z-50">
           {isOpen ? (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -599,7 +601,12 @@ const Header = () => {
               <BsChatDotsFill className="text-white text-2xl" />
             </div>
           )}
-        </div>
+        </div> */}
+        {/* ----------------------------spin-game------------------------ */}
+          <div className='fixed bottom-[2%] right-[1%]'>
+            <img className='w-[100px]' src={spin_img} alt="" />
+          </div>
+        {/* -----------------------spin-game------------------------- */}
         <div className="flex items-center space-x-4">
           {/* Left Side: Navigation Links */}
           <div className="flex justify-between items-center w-full py-3 bg-gray-900">
@@ -648,7 +655,7 @@ const Header = () => {
 {/* --------------------deposit-popup------------------------ */}
 {popupOpen && (
         <div className="fixed inset-0 flex items-center z-[100000000000000] justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-900 text-white p-6 rounded-lg w-[80%] md:w-[70%] lg:w-[50%] xl:w-[30%] 2xl:w-[20%] h-auto pb-[100px] shadow-lg">
+          <div className="bg-gray-900 text-white p-6 rounded-lg w-[95%] md:w-[70%] lg:w-[50%] xl:w-[30%] 2xl:w-[20%] h-auto pb-[100px] shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Wallet</h2>
               <button onClick={handleclosepopup} className="text-white text-xl">✕</button>
@@ -896,8 +903,18 @@ const Header = () => {
   {/* Navigation Links */}
   <ul className="py-2">
     <NavLink to="/profile">
-      <li className="px-4 py-2 flex items-center gap-2 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer">
+      <li className="px-4 py-2 font-[500] flex items-center gap-2 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer">
         <RxRocket /> My Profile
+      </li>
+    </NavLink>
+    <NavLink to="/profile">
+      <li className="px-4 py-2 flex font-[500] items-center gap-2 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer">
+        <IoWalletOutline /> <span>My Balance: ৳0</span>
+      </li>
+    </NavLink>
+    <NavLink to="/profile">
+      <li className="px-4 py-2 flex  font-[500] items-center gap-2 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer">
+        <PiCoinsDuotone /> <span>Bonus Balance: ৳0</span>
       </li>
     </NavLink>
     <li
