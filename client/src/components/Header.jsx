@@ -7,8 +7,11 @@ import { NavLink, useNavigate } from 'react-router';
 import AuthModal from './modal/AuthModal';
 import { BsChatDotsFill } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { FaPlus } from "react-icons/fa6";
+import { FaMinus } from "react-icons/fa6";
 import { IoWalletOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 import Confetti from 'react-confetti';
 import { PiCoinsDuotone } from "react-icons/pi";
 import { FaAngleDown } from "react-icons/fa";
@@ -41,15 +44,24 @@ function sidebarReducer(state, action) {
   }
 }
 const paymentMethods = {
-    deposit: [
-      { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg" },
-      { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg" },
-      { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg" },
-    ],
+  deposit: [
+    { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg", amount: 300},
+    { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg", amount: 300 },
+    { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg", amount: 300 },
+  
+    // Crypto Deposit Methods
+    { name: "Binance Pay", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_binance_pay_1.svg", amount: 300,bonus:"No Bonus"},
+    { name: "Bitcoin (BTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_btc_1.svg", amount: 300,bonus:"No Bonus" },
+    { name: "Ethereum (ETH)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_eth_1.svg", amount: 300,bonus:"No Bonus"},
+    { name: "Litecoin (LTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ltc_1.svg", amount: 300,bonus:"No Bonus" },
+    { name: "Solana (SOL)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_sol_1.svg", amount: 300,bonus:"No Bonus" },
+    { name: "Cardano (ADA)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ada_1.svg", amount: 300,bonus:"No Bonus" },
+  ],
+  
     withdraw: [
-      { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg" },
-      { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg" },
-      { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg" },
+      { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg",amount:300 },
+      { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg",amount:300 },
+      { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg",amount:300 },
     ],
   };
 const Header = () => {
@@ -134,7 +146,7 @@ const Header = () => {
   const [amount, setAmount] = useState(0);
   const [phone, setPhone] = useState("");
   const [agentNumber, setAgentNumber] = useState("");
-  const [transactionAmount, setTransactionAmount] = useState("");
+  const [transactionAmount, setTransactionAmount] = useState(0);
   const [transactionid,settransactionid]=useState("")
   const [isCopied, setIsCopied] = useState(false);  // To track the copied state
   const [loading, setLoading] = useState(false);
@@ -199,7 +211,15 @@ const Header = () => {
   const handlePresetAmount = (value) => {
     setTransactionAmount(value);
   };
+  useEffect(() => {
+    if (user_details.balance === 0) {
+      const timeout = setTimeout(() => {
+        setPopupOpen(true);
+      }, 100); // 3 minutes
 
+      return () => clearTimeout(timeout); // Cleanup on component unmount
+    }
+  }, [user_details.balance]);
   // -------------------make-paymnet-data-first------------------------
   // const handle_paymnet_submit = async (e) => {
   //   e.preventDefault();
@@ -315,7 +335,7 @@ const Header = () => {
 
     // If all validations pass
     try {
-      const {data} = await axios.post(`${base_url2}/api/payment/bkash`,{mid:"merchant1",payerId:user_details.player_id,amount:transactionAmount,currency:"BDT",redirectUrl:`http://localhost:5173`,orderId:orderId,callbackUrl:`http://localhost:5173/callback-payment`});
+      const {data} = await axios.post(`${base_url2}/api/payment/bkash`,{mid:"hobet",payerId:user_details.player_id,amount:transactionAmount,currency:"BDT",redirectUrl:`${frontend_url}`,orderId:orderId,callbackUrl:`${frontend_url}/callback-payment`});
       setProgress(70); // Update progress on successful request
       console.log(data)
       if (data.success) {
@@ -482,6 +502,7 @@ const Header = () => {
     
     // ---------bonus-sidebar------------------
     const [bonuspopup, setbonuspopup] = useState(false);
+    
     //----------menu-item---------------------------------
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -558,6 +579,16 @@ const Header = () => {
       setpayeer_account();
       setwithdraw_message("")
    }
+  //  ---------deposit--------------------
+  const bonuses = [
+    { name: "125% Deposit Bonus", img: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/offers/casino2.png" },
+    { name: "250 Free Spin", img: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/offers/sport1.png" },
+  ];
+  
+  const [bonusDropdown, setBonusDropdown] = useState(false);
+  const [selectedBonus, setSelectedBonus] = useState(bonuses[0]);
+  const [paymentDropdown, setPaymentDropdown] = useState(false);
+
   return (
     <div className=' sticky top-0 bg-gray-900 shadow-xl border-b-[1px] border-gray-700 left-0 z-[100]'>
       <div className=" hidden xl:flex  text-white p-4  justify-between items-center">
@@ -655,7 +686,7 @@ const Header = () => {
 {/* --------------------deposit-popup------------------------ */}
 {popupOpen && (
         <div className="fixed inset-0 flex items-center z-[100000000000000] justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-900 text-white p-6 rounded-lg w-[95%] md:w-[70%] lg:w-[50%] xl:w-[30%] 2xl:w-[20%] h-auto pb-[100px] shadow-lg">
+          <div className="bg-gray-900 text-white p-6 rounded-lg w-[95%] md:w-[70%] lg:w-[50%] xl:w-[40%] 2xl:w-[25%] h-auto shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Wallet</h2>
               <button onClick={handleclosepopup} className="text-white text-xl">✕</button>
@@ -676,11 +707,18 @@ const Header = () => {
                   {paymentMethods[selectedTab].map((method, index) => (
                     <div 
                       key={index} 
-                      className="bg-gray-800 p-3 rounded-lg flex flex-col items-center justify-center border border-gray-700 cursor-pointer"
+                      className="bg-gray-800 p-3 relative rounded-lg flex flex-col items-center justify-center border border-gray-700 cursor-pointer"
                       onClick={() => setSelectedMethod(method)}
                     >
+                      {
+                        method.bonus? <span className='px-[10px] py-[4px] absolute top-[1%] right-[1px] text-[10px] rounded-full text-green-400 font-[600]'>{method?.bonus}</span>:""
+                      }
+                    
                       <img src={method.src} alt={method.name} className="w-12 h-12 mb-2" />
-                      <span className="text-xs text-white font-medium text-center">{method.name}</span>
+                      <div className='text-center'>
+                         <span className="text-xs text-white font-medium text-center">{method.name}</span> <br />
+                         {/* <span className="text-xs text-white font-medium text-center">from {method.amount}TK</span> */}
+                      </div>
                     </div>
                   ))}
                 </motion.div>
@@ -690,79 +728,103 @@ const Header = () => {
                 {paymentSuccess && <Confetti width={width} height={height} />}
                 {
                   selectedTab=="deposit" ? <>
-                 <form onSubmit={handle_bkash_deposit}>
-                <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
-                {
-                deposit_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{deposit_message}</p>
-              }
-                <label className="text-sm mt-4 block">Amount (400৳ - 20000৳)</label>
-                <input
-                  type="number"
-                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
-                  value={transactionAmount}
-                  onChange={(e) => setTransactionAmount(e.target.value)}
-                  placeholder="Enter amount or select below"
-                  required
-                />
-          
-                <div className="flex space-x-2 mt-2">
-                  {presetAmounts.map((value) => (
-                    <div
-                      key={value}
-                      className={`flex-1 py-2 cursor-pointer text-center text-[14px] rounded-lg font-bold ${
-                        transactionAmount == value
-                          ? "bg-bg2 text-white"
-                          : "bg-gray-700 text-white"
-                      }`}
-                      onClick={() => handlePresetAmount(value)}
-                    >
-                      ৳ {value}
-                    </div>
-                  ))}
-                </div>
-          
-                {/* Submit Button */}
-                <button
-                  disabled={loading}
-                  className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-bg4 transition duration-300"
-                >
-                  {loading ? (
-                    <div className="flex justify-center items-center">
-                      <svg
-                        className="animate-spin h-5 w-5 mr-2 text-white"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8H4z"
-                        ></path>
-                      </svg>
-                      Processing...
-                    </div>
-                  ) : (
-                    "Submit Payment"
-                  )}
-                </button>
-                {selectedMethod && (
-              <div className="mt-4 flex justify-start">
-                <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
-                  <IoIosArrowBack className="text-white" />
-                </button>
+        <form onSubmit={handle_bkash_deposit} className="bg-gray-900  py-5 rounded-lg text-white w-full">
+      {/* Payment Method Selection */}
+      <div>
+         <img className="w-12 m-auto h-12 mb-1"  src={selectedMethod.src} alt="" />
+         <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+       </div>
+      {/* <div className="relative bg-gray-800 p-3 rounded-lg cursor-pointer" onClick={() => setPaymentDropdown(!paymentDropdown)}>
+ 
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center space-x-3">
+            <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12" />
+            <h3 className="text-lg font-semibold">{selectedMethod.name}</h3>
+          </div>
+          <IoIosArrowDown className={`transition-transform ${paymentDropdown ? 'rotate-180' : ''}`} />
+        </div>
+      </div> */}
+      
+      {deposit_message && <p className="mt-3 p-2 border border-red-300 bg-red-50 text-red-500 rounded">{deposit_message}</p>}
+      
+      {/* Amount Input */}
+      <label className="text-sm mt-4 block">Amount (300৳ - 25,000৳)</label>
+      <div className="flex items-center border-[2px] border-gray-500 px-3 py-2 rounded-[5px]  mt-1">
+        <button type="button" className="text-gray-400 border-gray-500" onClick={() => setTransactionAmount(Math.max(500, transactionAmount - 100))}><FaMinus/></button>
+        <input
+          type="number"
+          className="w-full text-center bg-transparent outline-none text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          value={transactionAmount}
+          onChange={(e) => setTransactionAmount(e.target.value)}
+        />
+        <button type="button" className="text-gray-400" onClick={() => setTransactionAmount(Math.min(25000, transactionAmount + 100))}><FaPlus/></button>
+      </div>
+      
+      {/* Preset Amounts */}
+      <div className="flex space-x-2 mt-2">
+        {presetAmounts.map((value) => (
+          <div
+            key={value}
+            className={`flex-1 py-2 cursor-pointer text-center text-[12px] rounded-[5px] font-[500] transition ${transactionAmount == value ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-white'}`}
+            onClick={() => handlePresetAmount(value)}
+          >
+            ৳{value}
+          </div>
+        ))}
+      </div>
+      
+      {/* Bonus Selection */}
+      <label className="text-sm mt-4 block">Get Your Deposit Bonus</label>
+
+      <div className="relative  px-3 py-2 border-[2px] border-gray-600 rounded-[5px] cursor-pointer mt-1" onClick={() => setBonusDropdown(!bonusDropdown)}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img src={selectedBonus.img} alt={selectedBonus.name} className="w-8 h-8 rounded-full" />
+            <h3 className="text-[15px]">{selectedBonus.name}</h3>
+          </div>
+          <IoIosArrowDown className={`transition-transform ${bonusDropdown ? 'rotate-180' : ''}`} />
+        </div>
+        {bonusDropdown && (
+          <div className="absolute top-full left-0 w-full no-scrollbar bg-gray-800 rounded-lg mt-1 shadow-lg z-10 max-h-40 overflow-y-auto">
+            {bonuses.map((bonus, index) => (
+              <div key={index} className="flex items-center p-3 hover:bg-gray-700 cursor-pointer" onClick={() => { setSelectedBonus(bonus); setBonusDropdown(false); }}>
+                <img src={bonus.img} alt={bonus.name} className="w-8 h-8 rounded-full" />
+                <span className="ml-3 flex-1 text-[145x]">{bonus.name}</span>
+                {selectedBonus.name === bonus.name && <IoIosCheckmarkCircle className="text-yellow-500" />}
               </div>
-            )}
-                 </form>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* Account Number Input */}
+      {/* <label className="text-sm mt-4 block">Account number</label>
+      <input
+        type="text"
+        className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+        placeholder="Enter account number"
+        required
+      /> */}
+      
+      {/* Submit Button */}
+      <button
+        disabled={loading}
+        className="w-full mt-4 py-2 rounded-[5px] font-bold text-white bg-bg4 transition duration-300 hover:bg-bg5"
+      >
+        {loading ? "Processing..." : "Submit Payment"}
+      </button>
+      
+      {selectedMethod && (
+        <div className="mt-4 flex justify-start">
+          <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
+            <IoIosArrowBack className="text-white" />
+          </button>
+        </div>
+      )}
+    </form>
                   </>: <form onSubmit={handlewithdraw}>
+                  <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12 m-auto mb-2" />
                 <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
                 {
                 withdraw_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{withdraw_message}</p>
@@ -781,7 +843,7 @@ const Header = () => {
                 <label className="text-sm mt-4 block">Amount (300৳ - 20000৳)</label>
                 <input
                   type="number"
-                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                  className="w-full p-2 mt-1 rounded bg-gray-800  border border-gray-700 text-white"
                   value={transactionAmount}
                   onChange={(e) => setTransactionAmount(e.target.value)}
                   placeholder="Enter amount or select below"
@@ -792,7 +854,7 @@ const Header = () => {
                   {presetAmounts.map((value) => (
                     <div
                       key={value}
-                      className={`flex-1 py-2 text-center cursor-pointer text-[14px] rounded-lg font-bold ${
+                      className={`flex-1 py-2 text-center cursor-pointer text-[12px] rounded-[5px] font-[500] ${
                         transactionAmount == value
                           ? "bg-bg2 text-white"
                           : "bg-gray-700 text-white"
@@ -909,7 +971,7 @@ const Header = () => {
     </NavLink>
     <NavLink to="/profile">
       <li className="px-4 py-2 flex font-[500] items-center gap-2 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer">
-        <IoWalletOutline /> <span>My Balance: ৳0</span>
+        <IoWalletOutline /> <span>My Balance: ৳{user_details.balance?.toFixed(2)}</span>
       </li>
     </NavLink>
     <NavLink to="/profile">
@@ -1064,7 +1126,7 @@ const Header = () => {
 {/* --------------------deposit-popup------------------------ */}
 {popupOpen && (
         <div className="fixed inset-0 flex items-center z-[100000000000000] justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-900 text-white p-6 rounded-lg w-[80%] md:w-[70%] lg:w-[50%] xl:w-[40%] 2xl:w-[30%] h-auto pb-[100px] shadow-lg">
+          <div className="bg-gray-900 text-white p-6 rounded-lg w-[80%] md:w-[70%] lg:w-[50%] xl:w-[40%] 2xl:w-[30%] h-auto  shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Wallet</h2>
               <button onClick={handleclosepopup} className="text-white text-xl">✕</button>
@@ -1100,7 +1162,10 @@ const Header = () => {
                 {
                   selectedTab=="deposit" ? <>
                  <form onSubmit={handle_bkash_deposit}>
-                <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                <div>
+                  <img className="w-12 m-auto h-12 mb-1"  src={selectedMethod.src} alt="" />
+                  <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                </div>
                 {
                 deposit_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{deposit_message}</p>
               }
@@ -1171,6 +1236,7 @@ const Header = () => {
             )}
                  </form>
                   </>: <form onSubmit={handlewithdraw}>
+                  <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 m-auto h-12 mb-1" />
                 <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
                 {
                 withdraw_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{withdraw_message}</p>

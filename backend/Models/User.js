@@ -106,7 +106,11 @@ const UserSchema = new Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    first_login:{
+        type:Boolean,
+        default:true
+    }
 }, { timestamps: true });
 
 const UserModel = mongoose.model('users', UserSchema);

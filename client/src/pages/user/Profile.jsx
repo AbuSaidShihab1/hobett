@@ -138,110 +138,116 @@ const filteredTransactions = transactionsData.filter((transaction) =>
         return () => connection.removeEventListener("change", updateSpeed);
       }
     }, []);
-  const user_info=JSON.parse(localStorage.getItem("user"))
-  const [user_details,set_userdetails]=useState([])
-  const user_data=()=>{
-    axios.get(`${base_url}/auth/user/${user_info?._id}`, {
-      headers: {
-          'Authorization': localStorage.getItem('token')
-      }
-  })
-    .then((res)=>{
-      console.log(res)
-      if(res.data.success){
-        set_userdetails(res.data.user)
-      }
-    }).catch((err)=>{
-      console.log(err)
-    })
-  }   
-  useEffect(()=>{
-    user_data();
-  },[])
-  // ------------------transactions-tab-----------------------------------
+    const user_info = JSON.parse(localStorage.getItem("user"));
 
-  const [transaction_info,set_transaction_info]=useState([]);
-  const transaction_history=()=>{
-      axios.get(`${base_url}/user/single-user-transactions/${user_info._id}`, {
-        headers: {
-            'Authorization': localStorage.getItem('token')
-        }
-    })
-      .then((res)=>{
-        console.log(res)
-          if(res.data.success){
-            console.log(res.data.data)
-            set_transaction_info(res.data.data)
-          }
-      }).catch((err)=>{
-          console.log(err.name)
-      })
-  };
-  useEffect(()=>{
-    transaction_history()
-  },[])
-  // -------------withdrawal-history--------------------
-  const [withdrawal_info,set_withdrawal_info]=useState([]);
-  const withdrwal_history=()=>{
-      axios.get(`${base_url}/user/withdrawal/${user_info._id}`, {
-        headers: {
-            'Authorization': localStorage.getItem('token')
-        }
-    })
-      .then((res)=>{
-        console.log(res)
-          if(res.data.success){
-            console.log(res.data.data)
-            set_withdrawal_info(res.data.data)
-          }
-      }).catch((err)=>{
-          console.log(err.name)
-      })
-  };
-  useEffect(()=>{
-    withdrwal_history()
-  },[])
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "completed":
-        return "text-green-400";
-      case "pending":
-        return "text-yellow-400";
-      case "failed":
-        return "text-red-400";
-      default:
-        return "text-gray-400";
-    }
-  };
-  // ------------change-password-----------------
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const [user_details, set_userdetails] = useState([]);
+    const [loadingUser, setLoadingUser] = useState(true); // Loader for user data
     
-    // Check if new password and confirm password match
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    // Additional validation (e.g., check password strength) can go here
-
-    // If everything is valid, proceed with the password change
-    console.log("Password changed successfully!");
-    setError(""); // Clear any previous errors
-  };
-  // ------------referal------------------
-  const [referralCode] = useState("GMUCB47658");
-  const referralLink = `https://www.website.eassypay.com?refer_code=${referralCode}`;
-
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
-  };
+    const user_data = () => {
+      setLoadingUser(true);
+      axios
+        .get(`${base_url}/auth/user/${user_info?._id}`, {
+          headers: { Authorization: localStorage.getItem("token") },
+        })
+        .then((res) => {
+          if (res.data.success) {
+            set_userdetails(res.data.user);
+          }
+        })
+        .catch((err) => console.log(err))
+        .finally(() => setLoadingUser(false));
+    };
+    
+    useEffect(() => {
+      user_data();
+    }, []);
+    
+    // ---------------- Transactions -------------------
+    const [transaction_info, set_transaction_info] = useState([]);
+    const [loadingTransactions, setLoadingTransactions] = useState(true); // Loader for transactions
+    
+    const transaction_history = () => {
+      setLoadingTransactions(true);
+      axios
+        .get(`${base_url}/user/single-user-transactions/${user_info._id}`, {
+          headers: { Authorization: localStorage.getItem("token") },
+        })
+        .then((res) => {
+          if (res.data.success) {
+            set_transaction_info(res.data.data);
+          }
+        })
+        .catch((err) => console.log(err.name))
+        .finally(() => setLoadingTransactions(false));
+    };
+    
+    useEffect(() => {
+      transaction_history();
+    }, []);
+    
+    // ------------- Withdrawal History ----------------
+    const [withdrawal_info, set_withdrawal_info] = useState([]);
+    const [loadingWithdrawals, setLoadingWithdrawals] = useState(true); // Loader for withdrawals
+    
+    const withdrwal_history = () => {
+      setLoadingWithdrawals(true);
+      axios
+        .get(`${base_url}/user/withdrawal/${user_info._id}`, {
+          headers: { Authorization: localStorage.getItem("token") },
+        })
+        .then((res) => {
+          if (res.data.success) {
+            set_withdrawal_info(res.data.data);
+          }
+        })
+        .catch((err) => console.log(err.name))
+        .finally(() => setLoadingWithdrawals(false));
+    };
+    
+    useEffect(() => {
+      withdrwal_history();
+    }, []);
+    
+    // --------- Utility function for status colors --------
+    const getStatusColor = (status) => {
+      switch (status) {
+        case "success":
+          return "text-green-400";
+        case "pending":
+          return "text-yellow-400";
+        case "failed":
+          return "text-red-400";
+        default:
+          return "text-gray-400";
+      }
+    };
+    
+    // ------------ Password Change -------------
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    
+    const handleSubmit = (e) => {
+      e.preventDefault();
+    
+      if (newPassword !== confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+    
+      console.log("Password changed successfully!");
+      setError(""); 
+    };
+    
+    // ------------ Referral -------------
+    const [referralCode] = useState("GMUCB47658");
+    const referralLink = `https://www.website.eassypay.com?refer_code=${referralCode}`;
+    
+    const handleCopy = (text) => {
+      navigator.clipboard.writeText(text);
+      alert("Copied to clipboard!");
+    };
   return (
    <section className='w-full h-full bg-dark_theme flex justify-center font-bai overflow-hidden'>
     <Sidebar/>
@@ -290,12 +296,12 @@ const filteredTransactions = transactionsData.filter((transaction) =>
         >
           Withdrawal History
         </button>
-        <button
+        {/* <button
           className={`w-full mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Referal" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("Referal")}
         >
           Referal
-        </button>
+        </button> */}
         <button
           className={`w-full mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Change Password" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("Change Password")}
@@ -307,7 +313,11 @@ const filteredTransactions = transactionsData.filter((transaction) =>
 
     {/* Main Content */}
     <main className="flex-1 lg:p-10 shadow-md xl:p-5">
-      {activeSection === "personal-info" && (
+    {loadingUser ? (
+      <p className="text-center text-indigo-500">Loading user details...</p>
+    ) : (
+      <>
+           {activeSection === "personal-info" && (
         <div>
           <h2 className="text-[18px] xl:text-2xl font-bold mb-5">Personal info</h2>
           <form className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -345,8 +355,14 @@ const filteredTransactions = transactionsData.filter((transaction) =>
           </form>
         </div>
       )}
-
-      {activeSection === "Transactions" && (
+      </>
+    )}
+   {/* Transactions Loader */}
+   {loadingTransactions ? (
+      <p className="text-center text-indigo-500">Loading transactions...</p>
+    ) : (
+      <>
+  {activeSection === "Transactions" && (
         <div>
           <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Deposit History</h2>
           <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
@@ -391,8 +407,16 @@ const filteredTransactions = transactionsData.filter((transaction) =>
           </div>
         </div>
       )}
+      </>
+    )}
 
-      {activeSection === "Withdrawal History" && (
+     
+  {/* Withdrawals Loader */}
+  {loadingWithdrawals ? (
+      <p className="text-center text-indigo-500">Loading withdrawals...</p>
+    ) : (
+      <>
+         {activeSection === "Withdrawal History" && (
         <div>
           <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Withdrawal History</h2>
           <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
@@ -441,22 +465,23 @@ const filteredTransactions = transactionsData.filter((transaction) =>
           </div>
         </div>
       )}
+      </>
+    )}
+   
 
       {activeSection === "Game History" && (
         <div>
           <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Game History</h2>
         </div>
       )}
-      {activeSection === "Referal" && (
+      {/* {activeSection === "Referal" && (
      <div className="  flex items-center justify-center ">
      <div className="w-full">
-       {/* Header Section */}
        <div className=" bg-gradient-to-b from-[#0F0D29] to-[#1B1440] text-white p-5 rounded-lg flex items-center justify-between shadow-md">
          <h2 className="text-[16px] lg:text-[18px] font-[600]">আপনার রেফারেল কোড শেয়ার করুন</h2>
          <span className="text-[16px] lg:text-[18px] font-[600]">৳{user_details?.balance}</span>
        </div>
 
-       {/* Referral Code Section */}
        <div className="mt-6">
          <h3 className="text-lg font-semibold text-gray-200">রেফারেল কোড:</h3>
          <div className="flex items-center bg-gray-800 px-3 py-[8px] rounded-[4px] justify-between mt-2 border border-gray-600">
@@ -467,7 +492,6 @@ const filteredTransactions = transactionsData.filter((transaction) =>
          </div>
        </div>
 
-       {/* Referral Link Section */}
        <div className="mt-4">
          <h3 className="text-lg font-semibold text-gray-800">আমার লিংক:</h3>
          <div className="flex items-center bg-gray-800 p-3 rounded-[4px] justify-between mt-2 border border-gray-500">
@@ -478,13 +502,11 @@ const filteredTransactions = transactionsData.filter((transaction) =>
          </div>
        </div>
 
-       {/* Referral Commission */}
        <div className="mt-6">
          <h3 className="text-[16px] font-semibold text-gray-200">আজীবন রেফারেল কমিশন</h3>
          <p className="text-sm text-gray-300 mt-[5px]">আপনার বন্ধুরা আমানত করলে আপনি কমিশন পাবেন।</p>
        </div>
 
-       {/* Referral Stats */}
        <div className="mt-6  bg-gradient-to-b from-[#0F0D29] to-[#1B1440] p-4 rounded-lg shadow-md">
          <div className="flex items-center justify-between bg-gradient-to-b from-[#0F0D29] to-[#1B1440] p-3 rounded-lg shadow-sm border border-gray-500">
            <span className="font-medium text-white">স্তর 1 (1%)</span>
@@ -501,21 +523,19 @@ const filteredTransactions = transactionsData.filter((transaction) =>
          </div>
        </div>
 
-       {/* Invite Friends Button */}
        <div className="mt-6 text-center">
          <button className=" bg-gradient-to-b from-[#0F0D29] to-[#1B1440] text-white px-6 py-3 rounded-lg flex items-center justify-center shadow-lg transition">
            <FaUserFriends className="mr-2" /> বন্ধুদের আমন্ত্রণ জানান
          </button>
        </div>
 
-       {/* Referral Bonus */}
        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
          <h3 className="text-lg font-semibold text-gray-800">রেফারেল বোনাস</h3>
          <p className="text-sm text-gray-600">রেফারেলের ফ্রি বোনাস: <span className="font-semibold text-indigo-700">0.00</span></p>
        </div>
      </div>
    </div>
-      )}
+      )} */}
       {activeSection === "Change Password" && (
         <div>
           <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Change Password</h2>
