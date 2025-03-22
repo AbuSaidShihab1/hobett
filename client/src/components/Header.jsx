@@ -1126,16 +1126,16 @@ const Header = () => {
 {/* --------------------deposit-popup------------------------ */}
 {popupOpen && (
         <div className="fixed inset-0 flex items-center z-[100000000000000] justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-900 text-white p-6 rounded-lg w-[80%] md:w-[70%] lg:w-[50%] xl:w-[40%] 2xl:w-[30%] h-auto  shadow-lg">
+          <div className="bg-gray-900 text-white p-3 lg:p-6 rounded-lg w-[95%] md:w-[70%] lg:w-[50%] xl:w-[40%] 2xl:w-[25%] h-auto shadow-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Wallet</h2>
-              <button onClick={handleclosepopup} className="text-white text-xl">✕</button>
+              <h2 className="text-[14px] font-semibold">Wallet</h2>
+              <button onClick={handleclosepopup} className="text-white text-[16px]">✕</button>
             </div>
             {!selectedMethod ? (
               <>
                 <div className="flex bg-gray-800 p-1 rounded-lg mb-4">
-                  <button className={`flex-1 py-2 rounded-lg ${selectedTab === "deposit" ? "bg-bg5 text-white font-bold" : "text-white"}`} onClick={() => setSelectedTab("deposit")}>Deposit</button>
-                  <button className={`flex-1 py-2 rounded-lg ${selectedTab === "withdraw" ? "bg-bg5 text-white font-bold" : "text-white"}`} onClick={() => setSelectedTab("withdraw")}>Withdraw</button>
+                  <button className={`flex-1 text-[13px] py-2 rounded-lg ${selectedTab === "deposit" ? "bg-bg5 text-white font-bold" : "text-white"}`} onClick={() => setSelectedTab("deposit")}>Deposit</button>
+                  <button className={`flex-1 py-2 text-[13px]  rounded-lg ${selectedTab === "withdraw" ? "bg-bg5 text-white font-bold" : "text-white"}`} onClick={() => setSelectedTab("withdraw")}>Withdraw</button>
                 </div>
                 <motion.div
                   key={selectedTab}
@@ -1147,11 +1147,18 @@ const Header = () => {
                   {paymentMethods[selectedTab].map((method, index) => (
                     <div 
                       key={index} 
-                      className="bg-gray-800 p-3 rounded-lg flex flex-col items-center justify-center border border-gray-700 cursor-pointer"
+                      className="bg-gray-800 px-1 py-2 relative rounded-lg flex flex-col items-center justify-center border border-gray-700 cursor-pointer"
                       onClick={() => setSelectedMethod(method)}
                     >
-                      <img src={method.src} alt={method.name} className="w-12 h-12 mb-2" />
-                      <span className="text-xs text-white font-medium text-center">{method.name}</span>
+                      {
+                        method.bonus? <span className='px-[10px] py-[4px] absolute top-[1%] right-0 text-[8px] rounded-full text-green-400 font-[600]'>{method?.bonus}</span>:""
+                      }
+                    
+                      <img src={method.src} alt={method.name} className="w-8 h-8 mb-1" />
+                      <div className='text-center'>
+                         <span className="text-[11px] text-white font-medium text-center">{method.name}</span> <br />
+                         {/* <span className="text-xs text-white font-medium text-center">from {method.amount}TK</span> */}
+                      </div>
                     </div>
                   ))}
                 </motion.div>
@@ -1161,110 +1168,133 @@ const Header = () => {
                 {paymentSuccess && <Confetti width={width} height={height} />}
                 {
                   selectedTab=="deposit" ? <>
-                 <form onSubmit={handle_bkash_deposit}>
-                <div>
-                  <img className="w-12 m-auto h-12 mb-1"  src={selectedMethod.src} alt="" />
-                  <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
-                </div>
-                {
-                deposit_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{deposit_message}</p>
-              }
-                <label className="text-sm mt-4 block">Amount (400৳ - 20000৳)</label>
-                <input
-                  type="number"
-                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
-                  value={transactionAmount}
-                  onChange={(e) => setTransactionAmount(e.target.value)}
-                  placeholder="Enter amount or select below"
-                />
-          
-                <div className="flex space-x-2 mt-2">
-                  {presetAmounts.map((value) => (
-                    <div
-                      key={value}
-                      className={`flex-1 py-2 cursor-pointer text-center text-[14px] rounded-lg font-bold ${
-                        transactionAmount == value
-                          ? "bg-bg2 text-white"
-                          : "bg-gray-700 text-white"
-                      }`}
-                      onClick={() => handlePresetAmount(value)}
-                    >
-                      ৳ {value}
-                    </div>
-                  ))}
-                </div>
-          
-                {/* Submit Button */}
-                <button
-                  disabled={loading}
-                  className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-bg4 transition duration-300"
-                >
-                  {loading ? (
-                    <div className="flex justify-center items-center">
-                      <svg
-                        className="animate-spin h-5 w-5 mr-2 text-white"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8H4z"
-                        ></path>
-                      </svg>
-                      Processing...
-                    </div>
-                  ) : (
-                    "Submit Payment"
-                  )}
-                </button>
-                {selectedMethod && (
-              <div className="mt-4 flex justify-start">
-                <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
-                  <IoIosArrowBack className="text-white" />
-                </button>
+        <form onSubmit={handle_bkash_deposit} className="bg-gray-900  py-5 rounded-lg text-white w-full">
+      {/* Payment Method Selection */}
+      <div>
+         <img className="w-10 m-auto h-10 mb-1"  src={selectedMethod.src} alt="" />
+         <h3 className="text-center text-[14px] font-semibold mb-2">{selectedMethod.name}</h3>
+       </div>
+      {/* <div className="relative bg-gray-800 p-3 rounded-lg cursor-pointer" onClick={() => setPaymentDropdown(!paymentDropdown)}>
+ 
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center space-x-3">
+            <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12" />
+            <h3 className="text-lg font-semibold">{selectedMethod.name}</h3>
+          </div>
+          <IoIosArrowDown className={`transition-transform ${paymentDropdown ? 'rotate-180' : ''}`} />
+        </div>
+      </div> */}
+      
+      {deposit_message && <p className="mt-3 p-2 border border-red-300 bg-red-50 text-red-500 rounded">{deposit_message}</p>}
+      
+      {/* Amount Input */}
+      <label className="text-[12px] mt-4 block">Amount (300৳ - 25,000৳)</label>
+      <div className="flex items-center border-[2px] border-gray-500 px-3 py-2 rounded-[5px]  mt-1">
+        <button type="button" className="text-gray-400 text-[14px] border-gray-500" onClick={() => setTransactionAmount(Math.max(500, transactionAmount - 100))}><FaMinus/></button>
+        <input
+          type="number"
+          className="w-full text-center bg-transparent outline-none text-[14px] lg:text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          value={transactionAmount}
+          onChange={(e) => setTransactionAmount(e.target.value)}
+        />
+        <button type="button" className="text-gray-400 text-[14px]" onClick={() => setTransactionAmount(Math.min(25000, transactionAmount + 100))}><FaPlus/></button>
+      </div>
+      
+      {/* Preset Amounts */}
+      <div className="flex space-x-2 mt-2">
+        {presetAmounts.map((value) => (
+          <div
+            key={value}
+            className={`flex-1 py-2 cursor-pointer text-center text-[11px] rounded-[5px] font-[500] transition ${transactionAmount == value ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-white'}`}
+            onClick={() => handlePresetAmount(value)}
+          >
+            ৳{value}
+          </div>
+        ))}
+      </div>
+      
+      {/* Bonus Selection */}
+      <label className="text-[12px] mt-4 block">Get Your Deposit Bonus</label>
+
+      <div className="relative  px-3 py-2 border-[2px] border-gray-600 rounded-[5px] cursor-pointer mt-1" onClick={() => setBonusDropdown(!bonusDropdown)}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img src={selectedBonus.img} alt={selectedBonus.name} className="w-6 h-6 rounded-full" />
+            <h3 className="text-[13px]">{selectedBonus.name}</h3>
+          </div>
+          <IoIosArrowDown className={`transition-transform ${bonusDropdown ? 'rotate-180' : ''}`} />
+        </div>
+        {bonusDropdown && (
+          <div className="absolute top-full left-0 w-full no-scrollbar bg-gray-800 rounded-lg mt-1 shadow-lg z-10 max-h-40 overflow-y-auto">
+            {bonuses.map((bonus, index) => (
+              <div key={index} className="flex items-center p-3 hover:bg-gray-700 cursor-pointer" onClick={() => { setSelectedBonus(bonus); setBonusDropdown(false); }}>
+                <img src={bonus.img} alt={bonus.name} className="w-6 h-6 rounded-full" />
+                <span className="ml-3 flex-1 text-[12px]">{bonus.name}</span>
+                {selectedBonus.name === bonus.name && <IoIosCheckmarkCircle className="text-yellow-500" />}
               </div>
-            )}
-                 </form>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* Account Number Input */}
+      {/* <label className="text-sm mt-4 block">Account number</label>
+      <input
+        type="text"
+        className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+        placeholder="Enter account number"
+        required
+      /> */}
+      
+      {/* Submit Button */}
+      <button
+        disabled={loading}
+        className="w-full mt-4 py-2 rounded-[5px] font-[500] text-white text-[14px] bg-bg4 transition duration-300 hover:bg-bg5"
+      >
+        {loading ? "Processing..." : "Submit Payment"}
+      </button>
+      
+      {selectedMethod && (
+        <div className="mt-4 flex justify-start">
+          <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
+            <IoIosArrowBack className="text-white" />
+          </button>
+        </div>
+      )}
+    </form>
                   </>: <form onSubmit={handlewithdraw}>
-                  <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 m-auto h-12 mb-1" />
-                <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                  <img src={selectedMethod.src} alt={selectedMethod.name} className="w-8 h-8 m-auto mb-2" />
+                <h3 className="text-center text-[15px] font-semibold mb-2">{selectedMethod.name}</h3>
                 {
                 withdraw_message=="" ? "":<p className="w-full px-[15px] py-[10px] border-[1px] border-red-300 bg-red-50 text-red-500 rounded-[5px]">{withdraw_message}</p>
               }
-                <label className="text-sm mt-4 block">Account Number</label>
+                <label className="text-[12px] mt-4 block">Account Number</label>
               <div className="flex items-center space-x-2 mb-4 mt-2 ">
                 <input
                   type="text"
-                  className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
+                  className="w-full px-2  py-2 text-[14px] rounded bg-gray-800 border  border-gray-700 text-white"
                   placeholder="Enter your number"
                   value={payeer_account}
                   onChange={(e)=>{setpayeer_account(e.target.value)}}
+                  required
                 />
               </div>
-                <label className="text-sm mt-4 block">Amount (300৳ - 20000৳)</label>
+                <label className="text-[12px] mt-4 block">Amount (300৳ - 20000৳)</label>
                 <input
                   type="number"
-                  className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                  className="w-full p-2 mt-1  text-[14px] rounded bg-gray-800  border border-gray-700 text-white"
                   value={transactionAmount}
                   onChange={(e) => setTransactionAmount(e.target.value)}
                   placeholder="Enter amount or select below"
+                  required
                 />
           
                 <div className="flex space-x-2 mt-2">
                   {presetAmounts.map((value) => (
                     <div
                       key={value}
-                      className={`flex-1 py-2 text-center cursor-pointer text-[14px] rounded-lg font-bold ${
+                      className={`flex-1 py-2 text-center cursor-pointer text-[10px] rounded-[5px] font-[500] ${
                         transactionAmount == value
                           ? "bg-bg2 text-white"
                           : "bg-gray-700 text-white"
@@ -1279,7 +1309,7 @@ const Header = () => {
                 {/* Submit Button */}
                 <button
                   disabled={loading}
-                  className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-bg5 transition duration-300"
+                  className="w-full mt-4 py-2 rounded-lg font-[500] text-white text-[14px] bg-bg5 transition duration-300"
                 >
            {loading ? (
           <div className="flex justify-center items-center">

@@ -262,13 +262,13 @@ const filteredTransactions = transactionsData.filter((transaction) =>
           <FaUser className="text-white text-xl" />
         </div>
         <div>
-          <h3 className="font-bold">{user_details.name}</h3>
+          <h3 className="font-[500] text-[14px] lg:text-[16px]">{user_details.name}</h3>
         </div>
       </div>
 
       <div className="mb-5 p-3 border-[2px] border-gray-700 rounded-[5px]">
-        <p className="text-[18px] font-[600] text-bg5">Real money</p>
-        <p className="font-bold text-white">৳{user_details.balance?.toFixed(2)}</p>
+        <p className="text-[15px] lg:text-[18px] font-[600] text-bg5">Real money</p>
+        <p className="text-[13px] lg:text-[15px] font-bold text-white">৳{user_details.balance?.toFixed(2)}</p>
       </div>
       <div className="mb-5 p-3 border-[2px] border-gray-700 rounded-[5px]">
         <p className="text-sm">Bonus money</p>
@@ -277,21 +277,21 @@ const filteredTransactions = transactionsData.filter((transaction) =>
 
       {/* Sidebar Links */}
       <nav>
-        <h4 className="font-bold mb-2">My account</h4>
+        <h4 className="text-[15px] lg:text-[17px] font-bold mb-2">My account</h4>
         <button
-          className={`w-full flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "personal-info" ? "bg-bg5" : "hover:bg-bg4"}`}
+          className={`w-full text-[13px] lg:text-[15px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "personal-info" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("personal-info")}
         >
           Personal info
         </button>
         <button
-          className={`w-full mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Transactions" ? "bg-bg5" : "hover:bg-bg4"}`}
+          className={`w-full text-[13px] lg:text-[15px]  mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Transactions" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("Transactions")}
         >
           Deposit History
         </button>
         <button
-          className={`w-full mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Withdrawal History" ? "bg-bg5" : "hover:bg-bg4"}`}
+          className={`w-full text-[13px] lg:text-[15px]  mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Withdrawal History" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("Withdrawal History")}
         >
           Withdrawal History
@@ -303,7 +303,7 @@ const filteredTransactions = transactionsData.filter((transaction) =>
           Referal
         </button> */}
         <button
-          className={`w-full mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Change Password" ? "bg-bg5" : "hover:bg-bg4"}`}
+          className={`w-full text-[13px] lg:text-[15px]  mt-[10px] flex justify-between px-3 py-[10px] rounded-[5px] ${activeSection === "Change Password" ? "bg-bg5" : "hover:bg-bg4"}`}
           onClick={() => setActiveSection("Change Password")}
         >
           Change Password
@@ -319,38 +319,38 @@ const filteredTransactions = transactionsData.filter((transaction) =>
       <>
            {activeSection === "personal-info" && (
         <div>
-          <h2 className="text-[18px] xl:text-2xl font-bold mb-5">Personal info</h2>
-          <form className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
+          <h2 className="text-[14px] xl:text-2xl font-bold mb-5">Personal info</h2>
+          <form className="flex flex-wrap  gap-5">
+            <div className="w-full">
               <label className="block text-sm">Username</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?.name} />
+              <input type="text" className="w-full p-2 bg-gray-800 text-[13px] lg:text-[15px] border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?.name} />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">Email</label>
-              <input type="email" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?.email} />
+              <input type="email" className="w-full p-2 bg-gray-800 text-[13px] lg:text-[15px] border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?.email} />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">Player ID</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?.player_id} />
+              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px] text-[13px] lg:text-[15px]" defaultValue={user_details?.player_id} />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">Currency</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue="BDT" />
+              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px] text-[13px] lg:text-[15px]" defaultValue="BDT" />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">Country</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue="Bangladesh" />
+              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]  text-[13px] lg:text-[15px]" defaultValue="Bangladesh" />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">ID</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px]" defaultValue={user_details?._id} />
+              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px] text-[13px] lg:text-[15px]" defaultValue={user_details?._id} />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm">Referral Code</label>
-              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] border-gray-700 mt-[5px] rounded-[4px] text-bg5" defaultValue={`https://hobet.com/` + user_details?.referralCode} />
+              <input type="text" className="w-full p-2 bg-gray-800 border-[2px] text-[13px] lg:text-[15px] border-gray-700 mt-[5px] rounded-[4px] text-bg5" defaultValue={`https://hobet.com/` + user_details?.referralCode} />
             </div>
             <div className="col-span-2">
-              <button className="w-full bg-bg4 p-3 text-white font-bold rounded-md">SUBMIT</button>
+              <button className="w-full text-[14px] px-[20px] lg:text-[16px] bg-bg4 p-3 text-white font-[500] lg:font-bold rounded-md">SUBMIT</button>
             </div>
           </form>
         </div>
@@ -364,17 +364,17 @@ const filteredTransactions = transactionsData.filter((transaction) =>
       <>
   {activeSection === "Transactions" && (
         <div>
-          <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Deposit History</h2>
+          <h2 className="text-[14px] lg:text-[20px] xl:text-2xl font-bold mb-5">Deposit History</h2>
           <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse border border-gray-700 shadow-lg rounded-lg">
                 <thead>
                   <tr className="bg-gray-900 text-white">
-                    <th className="p-3 border border-gray-700">Type</th>
-                    <th className="p-3 border border-gray-700">Payment Method</th>
-                    <th className="p-3 border border-gray-700">Amount</th>
-                    <th className="p-3 border border-gray-700">Date</th>
-                    <th className="p-3 border border-gray-700">Status</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Type</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Payment Method</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Amount</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Date</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -384,11 +384,11 @@ const filteredTransactions = transactionsData.filter((transaction) =>
                         key={transaction._id}
                         className={index % 2 === 0 ? "bg-gray-800 hover:bg-gray-700 transition-colors" : "bg-gray-700 hover:bg-gray-600 transition-colors"}
                       >
-                        <td className={`p-3 border border-gray-700 ${transaction.payment_type === "Deposit" ? "text-green-500" : "text-orange-500"}`}>{transaction.payment_type}</td>
-                        <td className="p-3 border border-gray-700">{transaction.payment_method}</td>
-                        <td className="p-3 border border-gray-700">{transaction.amount}</td>
-                        <td className="p-3 border border-gray-700">{moment(transaction.createdAt).fromNow()}</td>
-                        <td className={`p-3 border border-gray-700 font-bold ${getStatusColor(transaction.status)}`}>{transaction.status}</td>
+                        <td className={`p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px] ${transaction.payment_type === "Deposit" ? "text-green-500" : "text-orange-500"}`}>{transaction.payment_type}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{transaction.payment_method}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{transaction.amount}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{moment(transaction.createdAt).fromNow()}</td>
+                        <td className={`p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px] font-bold ${getStatusColor(transaction.status)}`}>{transaction.status}</td>
                       </tr>
                     ))
                   ) : (
@@ -418,18 +418,18 @@ const filteredTransactions = transactionsData.filter((transaction) =>
       <>
          {activeSection === "Withdrawal History" && (
         <div>
-          <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Withdrawal History</h2>
+          <h2 className="text-[14px] lg:text-[20px] xl:text-2xl font-bold mb-5">Withdrawal History</h2>
           <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse border border-gray-700 shadow-lg rounded-lg">
                 <thead>
                   <tr className="bg-gray-900 text-white">
-                    <th className="p-3 border border-gray-700">Payment Provider</th>
-                    <th className="p-3 border border-gray-700">Amount</th>
-                    <th className="p-3 border border-gray-700">Order ID</th>
-                    <th className="p-3 border border-gray-700">Payee Account</th>
-                    <th className="p-3 border border-gray-700">Date</th>
-                    <th className="p-3 border border-gray-700">Status</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Payment Provider</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Amount</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Order ID</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Payee Account</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Date</th>
+                    <th className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -439,12 +439,12 @@ const filteredTransactions = transactionsData.filter((transaction) =>
                         key={transaction._id}
                         className={index % 2 === 0 ? "bg-gray-800 hover:bg-gray-700 transition-colors" : "bg-gray-700 hover:bg-gray-600 transition-colors"}
                       >
-                        <td className="p-3 border border-gray-700">{transaction.provider}</td>
-                        <td className="p-3 border border-gray-700">৳ {transaction.amount}</td>
-                        <td className="p-3 border border-gray-700">{transaction.orderId}</td>
-                        <td className="p-3 border border-gray-700">{transaction.payeeAccount}</td>
-                        <td className="p-3 border border-gray-700">{moment(transaction.createdAt).fromNow()}</td>
-                        <td className={`p-3 border border-gray-700 font-bold ${transaction.status === "pending" ? "text-yellow-400" : transaction.status === "success" ? "text-green-500" : "text-red-500"}`}>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{transaction.provider}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">৳ {transaction.amount}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{transaction.orderId}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{transaction.payeeAccount}</td>
+                        <td className="p-3 border border-gray-700 text-nowrap text-[13px] lg:text-[15px]">{moment(transaction.createdAt).fromNow()}</td>
+                        <td className={`p-3 border border-gray-700  text-nowrap text-[13px] lg:text-[15px] font-bold ${transaction.status === "pending" ? "text-yellow-400" : transaction.status === "success" ? "text-green-500" : "text-red-500"}`}>
                           {transaction.status}
                         </td>
                       </tr>
@@ -471,7 +471,7 @@ const filteredTransactions = transactionsData.filter((transaction) =>
 
       {activeSection === "Game History" && (
         <div>
-          <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Game History</h2>
+          <h2 className="text-[14px] lg:text-[20px] xl:text-2xl font-bold mb-5">Game History</h2>
         </div>
       )}
       {/* {activeSection === "Referal" && (
@@ -538,7 +538,7 @@ const filteredTransactions = transactionsData.filter((transaction) =>
       )} */}
       {activeSection === "Change Password" && (
         <div>
-          <h2 className="text-[17px] lg:text-[20px] xl:text-2xl font-bold mb-5">Change Password</h2>
+          <h2 className="text-[14px] lg:text-[20px] xl:text-2xl font-bold mb-5">Change Password</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="current-password" className="block text-sm font-medium text-gray-300">Current Password</label>
