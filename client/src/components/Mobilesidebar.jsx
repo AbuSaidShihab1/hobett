@@ -85,7 +85,7 @@ const Mobilesidebar = () => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const { width, height } = useWindowSize(); // Get window size for confetti
   const base_url = import.meta.env.VITE_API_KEY_Base_URL;
-  const base_url2="http://localhost:6001";
+  const base_url2="https://api.eassypay.com";
   const merchant_name="hobet"
 
   useEffect(() => {
@@ -153,7 +153,7 @@ const Mobilesidebar = () => {
   //   };
   //   try {
   //     const response = await axios.post(
-  //       `http://localhost:6001/api/payment/payment`,
+  //       `https://api.eassypay.com/api/payment/payment`,
   //       postData
   //     );
   //     if (response.data.success) {

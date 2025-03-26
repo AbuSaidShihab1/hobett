@@ -13,7 +13,7 @@ const Pendingwithdraw = () => {
  const [orderId, setOrderId] = useState("");
  const base_url = import.meta.env.VITE_API_KEY_Base_URL;
 
- const base_url2="http://localhost:6001";
+ const base_url2="https://api.eassypay.com";
   // Fetch Pending Withdrawals
   const fetchWithdrawals = () => {
     axios
