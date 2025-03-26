@@ -115,7 +115,7 @@
                   </>: <form onSubmit={handlewithdraw}>
                 <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
                 <label className="text-sm mt-4 block">Account Number</label>
-              <div className="flex items-center space-x-2 mb-4 mt-2 ">
+                <div className="flex items-center space-x-2 mb-4 mt-2 ">
                 <input
                   type="text"
                   className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
@@ -123,7 +123,7 @@
                   value={payeer_account}
                   onChange={(e)=>{setpayeer_account(e.target.value)}}
                 />
-              </div>
+                </div>
                 <label className="text-sm mt-4 block">Amount (300৳ - 20000৳)</label>
                 <input
                   type="number"
@@ -131,8 +131,7 @@
                   value={transactionAmount}
                   onChange={(e) => setTransactionAmount(e.target.value)}
                   placeholder="Enter amount or select below"
-                />
-          
+                />         
                 <div className="flex space-x-2 mt-2">
                   {presetAmounts.map((value) => (
                     <div
@@ -346,3 +345,21 @@
     {isOpen && <span>Mobile App</span>}
   </li>
 </ul>
+
+  {/* Agent Number Field */}
+  <label className="text-sm mt-4 block">Agent Number</label>
+  <div className="relative w-full">
+    <input
+      type="text"
+      className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white pr-10"
+      value={agentNumber}
+      readOnly
+    />
+    <button
+      type="button"
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white"
+      onClick={handleCopy}
+    >
+      {copied ? <FiCheck className="text-green-400 transition duration-300" /> : <FiCopy />}
+    </button>
+  </div>

@@ -9,6 +9,7 @@ import { BsChatDotsFill } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { FaPlus } from "react-icons/fa6";
 import { FaMinus } from "react-icons/fa6";
+import { FiCopy, FiCheck } from "react-icons/fi";
 import { IoWalletOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { IoIosCheckmarkCircle } from "react-icons/io";
@@ -45,17 +46,21 @@ function sidebarReducer(state, action) {
 }
 const paymentMethods = {
   deposit: [
-    { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg", amount: 300},
-    { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg", amount: 300 },
-    { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg", amount: 300 },
+    { name: "Bkash Fast", src: "https://elon.casino/icons-elon/payments/218.svg", amount: 300,payment_type:"p2c"},
+    { name: "Nagad Fast", src: "https://elon.casino/icons-elon/payments/223.svg", amount: 300,payment_type:"p2c" },
+    { name: "Rocket Fast", src: "https://elon.casino/icons-elon/payments/103.svg", amount: 300,payment_type:"p2c" },
+    { name: "Bkash", src: "https://elon.casino/icons-elon/payments/218.svg", amount: 300,payment_type:"p2p"},
+    { name: "Nagad", src: "https://elon.casino/icons-elon/payments/223.svg", amount: 300,payment_type:"p2p" },
+   { name: "Rocket", src: "https://elon.casino/icons-elon/payments/103.svg", amount: 300,payment_type:"p2p" },
   
     // Crypto Deposit Methods
-    { name: "Binance Pay", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_binance_pay_1.svg", amount: 300,bonus:"No Bonus"},
-    { name: "Bitcoin (BTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_btc_1.svg", amount: 300,bonus:"No Bonus" },
-    { name: "Ethereum (ETH)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_eth_1.svg", amount: 300,bonus:"No Bonus"},
-    { name: "Litecoin (LTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ltc_1.svg", amount: 300,bonus:"No Bonus" },
-    { name: "Solana (SOL)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_sol_1.svg", amount: 300,bonus:"No Bonus" },
-    { name: "Cardano (ADA)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ada_1.svg", amount: 300,bonus:"No Bonus" },
+    // { name: "Binance Pay", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_binance_pay_1.svg", amount: 300,bonus:"No Bonus"},
+    // { name: "Bitcoin (BTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_btc_1.svg", amount: 300,bonus:"No Bonus" },
+    // { name: "Ethereum (ETH)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_eth_1.svg", amount: 300,bonus:"No Bonus"},
+    // { name: "Litecoin (LTC)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ltc_1.svg", amount: 300,bonus:"No Bonus" },
+    // { name: "Solana (SOL)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_sol_1.svg", amount: 300,bonus:"No Bonus" },
+    // { name: "Cardano (ADA)", src: "https://origin-r2.ibbf55-resources.com/ContentCommon/payments/icons/new/ib_NEW_cryptoprocessing_ada_1.svg", amount: 300,bonus:"No Bonus" },
+  
   ],
   
     withdraw: [
@@ -161,10 +166,14 @@ const Header = () => {
     setOrderId(nanoid(8));
   }, []);
   // ------------random agent number
+
+  // ----------------------random-agent---------------------
+  const [copied, setCopied] = useState(false);
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(agentNumber);  // Copy the agent number to clipboard
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);  // Reset after 2 seconds
+    navigator.clipboard.writeText(agentNumber);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
   };
   const [random_agent,set_radom_agent]=useState([]);
   const random_agent_number=()=>{
@@ -221,50 +230,63 @@ const Header = () => {
     }
   }, [user_details.balance]);
   // -------------------make-paymnet-data-first------------------------
-  // const handle_paymnet_submit = async (e) => {
-  //   e.preventDefault();
-  //   const postData = {
-  //     provider:selectedMethod.name,
-  //     amount:transactionAmount,
-  //     mid: "shihab",
-  //     orderId: orderId,
-  //     currency: "BDT",
-  //     payerId: user_info.player_id,
-  //     redirectUrl: "http://localhost:5173/profile",
-  //   };
-  //   try {
-  //     const response = await axios.post(
-  //       `http://localhost:6001/api/payment/payment`,
-  //       postData
-  //     );
-  //     if (response.data.success) {
-  //       toast.success("Please send money and fill up information!");
-  //        set_activetab("checkout");
-  //        set_paymentid(response.data.paymentId)
-  //     } else {
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Error!",
-  //         text: response.data.message || "Payment failed.",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error!",
-  //       text: error.message || "Something went wrong.",
-  //     });
-  //   }
-  // };
+  const handle_p2p_payment = async (e) => {
+    e.preventDefault();
+    console.log(selectedMethod.name);
+  
+    const apiKey = "15dca2467708d9211c242785bc28b0de6550c937d5f4fe74fd4f11394c36f79c"; // Replace this with the actual API key or fetch from state/env
+  
+    const postData = {
+      provider: selectedMethod.name,
+      amount: transactionAmount,
+      mid: "hobet",
+      orderId: orderId,
+      currency: "BDT",
+      payerId: user_info.player_id,
+      redirectUrl: `${frontend_url}`,
+    };
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:6001/api/payment/payment`,
+        postData,
+        {
+          headers: {
+            "x-api-key": apiKey, // Passing API key in the request header
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        toast.success("Please send money and fill up information!");
+        set_activetab("checkout");
+        set_paymentid(response.data.paymentId);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: response.data.message || "Payment failed.",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.message || "Something went wrong.",
+      });
+    }
+  };
+  
   // console.log(paymnet_id)
   // Handle form submission
   const [progress, setProgress] = useState(0); // New state to track progress
+  const [p2p_message,set_p2p_message]=useState("")
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     axios.post(`${base_url2}/api/payment/paymentSubmit`, {
       paymentId: paymnet_id,
-      provider: "bkash",
+      provider: selectedMethod.name,
       agentAccount: agentNumber,
       payerAccount: phone,
       transactionId: transactionid,
@@ -272,22 +294,39 @@ const Header = () => {
     .then((res) => {
       console.log(res.data);
       if (res.data.success) {
-        axios.put(`${base_url2}/auth/update-user-balance/${user_info._id}`,{amount}, {
-          headers: {
-              'Authorization': localStorage.getItem('token')
-          }
-      })
-        .then((res)=>{
-          console.log(res)
+        setSelectedMethod(null)
+        setPopupOpen(false);
+        Swal.fire({
+          title: "Deposit Successful! 🎉",
+          text: `Your deposit of ৳${amount} has been confirmed!`,
+          icon: "success",
+          confirmButtonText: "OK",
+          background: "#1f2937", // Dark theme
+          color: "#ffffff",
+          confirmButtonColor: "#10b981", // Tailwind Green
+         
+        });
+         axios.post(`${base_url}/user/create-transaction`, {
+          payment_type: "Deposit",
+          post_balance:user_details.balance,
+          transaction:transactionid,
+          amount:transactionAmount,
+          payment_method:selectedMethod.name,
+          status:"success",
+          customer_id: user_info._id,
+        }).then((res)=>{
+           console.log(res.data)
         }).catch((err)=>{
           console.log(err)
         })
+    
         toast.success(res.data.message);
         setPaymentSuccess(true); // Trigger confetti animation
         setTimeout(() => setPaymentSuccess(false), 5000); // Hide confetti after 5s
         // setPopupOpen(false)
       } else {
-        toast.error(res.data.message);
+        // toast.error(res.data.message);
+        set_p2p_message(res.data.message)
       }
     })
     .catch((err) => {
@@ -330,7 +369,7 @@ const Header = () => {
       return;
     }
     console.log(selectedMethod)
-      if(selectedMethod.name==="Bkash"){
+      if(selectedMethod.name==="Bkash Fast"){
     setLoading(true);
 
     // If all validations pass
@@ -728,101 +767,250 @@ const Header = () => {
                 {paymentSuccess && <Confetti width={width} height={height} />}
                 {
                   selectedTab=="deposit" ? <>
-        <form onSubmit={handle_bkash_deposit} className="bg-gray-900  py-5 rounded-lg text-white w-full">
-      {/* Payment Method Selection */}
-      <div>
-         <img className="w-12 m-auto h-12 mb-1"  src={selectedMethod.src} alt="" />
-         <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
-       </div>
-      {/* <div className="relative bg-gray-800 p-3 rounded-lg cursor-pointer" onClick={() => setPaymentDropdown(!paymentDropdown)}>
- 
-        <div className="flex items-center justify-between">
+                        {
+                          selectedMethod.payment_type=="p2c"?      
+                            <form onSubmit={handle_bkash_deposit} className="bg-gray-900  py-5 rounded-lg text-white w-full">
+                          {/* Payment Method Selection */}
+                          <div>
+                             <img className="w-12 m-auto h-12 mb-1"  src={selectedMethod.src} alt="" />
+                             <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                           </div>
+                          {/* <div className="relative bg-gray-800 p-3 rounded-lg cursor-pointer" onClick={() => setPaymentDropdown(!paymentDropdown)}>
+                     
+                            <div className="flex items-center justify-between">
+                    
+                              <div className="flex items-center space-x-3">
+                                <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12" />
+                                <h3 className="text-lg font-semibold">{selectedMethod.name}</h3>
+                              </div>
+                              <IoIosArrowDown className={`transition-transform ${paymentDropdown ? 'rotate-180' : ''}`} />
+                            </div>
+                          </div> */}
+                          
+                          {deposit_message && <p className="mt-3 p-2 border border-red-300 bg-red-50 text-red-500 rounded">{deposit_message}</p>}
+                          
+                          {/* Amount Input */}
+                          <label className="text-sm mt-4 block">Amount (300৳ - 25,000৳)</label>
+                          <div className="flex items-center border-[2px] border-gray-500 px-3 py-2 rounded-[5px]  mt-1">
+                            <button type="button" className="text-gray-400 border-gray-500" onClick={() => setTransactionAmount(Math.max(500, transactionAmount - 100))}><FaMinus/></button>
+                            <input
+                              type="number"
+                              className="w-full text-center bg-transparent outline-none text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              value={transactionAmount}
+                              onChange={(e) => setTransactionAmount(e.target.value)}
+                            />
+                            <button type="button" className="text-gray-400" onClick={() => setTransactionAmount(Math.min(25000, transactionAmount + 100))}><FaPlus/></button>
+                          </div>
+                          
+                          {/* Preset Amounts */}
+                          <div className="flex space-x-2 mt-2">
+                            {presetAmounts.map((value) => (
+                              <div
+                                key={value}
+                                className={`flex-1 py-2 cursor-pointer text-center text-[12px] rounded-[5px] font-[500] transition ${transactionAmount == value ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-white'}`}
+                                onClick={() => handlePresetAmount(value)}
+                              >
+                                ৳{value}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Bonus Selection */}
+                          <label className="text-sm mt-4 block">Get Your Deposit Bonus</label>
+                    
+                          <div className="relative  px-3 py-2 border-[2px] border-gray-600 rounded-[5px] cursor-pointer mt-1" onClick={() => setBonusDropdown(!bonusDropdown)}>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <img src={selectedBonus.img} alt={selectedBonus.name} className="w-8 h-8 rounded-full" />
+                                <h3 className="text-[15px]">{selectedBonus.name}</h3>
+                              </div>
+                              <IoIosArrowDown className={`transition-transform ${bonusDropdown ? 'rotate-180' : ''}`} />
+                            </div>
+                            {bonusDropdown && (
+                              <div className="absolute top-full left-0 w-full no-scrollbar bg-gray-800 rounded-lg mt-1 shadow-lg z-10 max-h-40 overflow-y-auto">
+                                {bonuses.map((bonus, index) => (
+                                  <div key={index} className="flex items-center p-3 hover:bg-gray-700 cursor-pointer" onClick={() => { setSelectedBonus(bonus); setBonusDropdown(false); }}>
+                                    <img src={bonus.img} alt={bonus.name} className="w-8 h-8 rounded-full" />
+                                    <span className="ml-3 flex-1 text-[145x]">{bonus.name}</span>
+                                    {selectedBonus.name === bonus.name && <IoIosCheckmarkCircle className="text-yellow-500" />}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Account Number Input */}
+                          {/* <label className="text-sm mt-4 block">Account number</label>
+                          <input
+                            type="text"
+                            className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                            placeholder="Enter account number"
+                            required
+                          /> */}
+                          
+                          {/* Submit Button */}
+                          <button
+                            disabled={loading}
+                            className="w-full mt-4 py-2 rounded-[5px] font-bold text-white bg-bg4 transition duration-300 hover:bg-bg5"
+                          >
+                            {loading ? "Processing..." : "Submit Payment"}
+                          </button>
+                          
+                          {selectedMethod && (
+                            <div className="mt-4 flex justify-start">
+                              <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
+                                <IoIosArrowBack className="text-white" />
+                              </button>
+                            </div>
+                          )}
+                        </form>:
+                        <>
+                          {
+                          active_tab=="make_payment" ? 
+                                <form onSubmit={handle_p2p_payment}>
+                          <img className="w-12 m-auto h-12 mb-1" src={selectedMethod.src} alt="" />
+                          <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                    
+                          {/* Amount Input */}
+                          <label className="text-sm mt-4 block">Amount (400৳ - 20000৳)</label>
+                          <input
+                            type="number"
+                            className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
+                            value={transactionAmount}
+                            onChange={(e) => setTransactionAmount(e.target.value)}
+                            placeholder="Enter amount or select below"
+                          />
+                    
+                          {/* Preset Amounts */}
+                          <div className="flex space-x-2 mt-2">
+                            {presetAmounts.map((value) => (
+                              <div
+                                key={value}
+                                className={`flex-1 py-2 text-[12px] lg:text-[14px] cursor-pointer flex justify-center items-center rounded-lg font-bold ${transactionAmount == value ? "bg-bg5 text-black" : "bg-gray-700 text-white"}`}
+                                onClick={() => handlePresetAmount(value)}
+                              >
+                                ৳ {value}
+                              </div>
+                            ))}
+                          </div>
+                    
+                        
+                    
+                          {/* Submit Button */}
+                          <button
+                            disabled={loading}
+                            className="w-full mt-4 py-2 rounded-lg font-bold text-white bg-bg5 hover:bg-bg6 transition duration-300"
+                          >
+                            {loading ? (
+                              <div className="flex justify-center items-center">
+                                <svg
+                                  className="animate-spin h-5 w-5 mr-2 text-white"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                                Processing...
+                              </div>
+                            ) : (
+                              "Submit Payment"
+                            )}
+                          </button>
+                    
+                          {/* Back Button */}
+                          {selectedMethod && (
+                            <div className="mt-4 flex justify-start">
+                              <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
+                                <IoIosArrowBack className="text-white" />
+                              </button>
+                            </div>
+                          )}
+                                            </form>:  <form onSubmit={handleSubmit}>
+                          <img className="w-12 m-auto h-12 mb-1" src={selectedMethod.src} alt="" />
+                          <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
+                     {/* Agent Number Field */}
+                     {
+                      p2p_message==""? "":<p className='w-full px-[10px] py-[8px] bg-red-100 text-red-500 border-[1px] border-red-500 rounded-[5px]'>{p2p_message}</p>
+                     }
+  <label className="text-sm mt-4 block">Agent Number</label>
+  <div className="relative w-full">
+    <input
+      type="text"
+      className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white pr-10"
+      value={agentNumber}
+      readOnly
+    />
+    <button
+      type="button"
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white"
+      onClick={handleCopy}
+    >
+      {copied ? <FiCheck className="text-green-400 transition duration-300" /> : <FiCopy />}
+    </button>
+  </div>
+  <label className="text-sm mt-4 block">Account Number</label>
+              <div className="flex items-center space-x-2 mb-4 mt-2 ">
+                <input
+                  type="text"
+                  className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
+                  placeholder="Enter your number"
+                  value={phone}
+                  onChange={(e)=>{setPhone(e.target.value)}}
+                  required
+                />
+              </div>         
+              <label className="text-sm mt-4 block">Transaction ID</label>
+              <div className="flex items-center space-x-2 mb-4 mt-2 ">
+                <input
+                  type="text"
+                  className="w-full p-2  rounded bg-gray-800 border  border-gray-700 text-white"
+                  placeholder="Enter your number"
+                  value={transactionid}
+                  onChange={(e)=>{settransactionid(e.target.value)}}
+                  required
+                />
+              </div>  
+                          {/* Submit Button */}
+                          <button
+                            disabled={loading}
+                            className="w-full mt-1 py-2 rounded-lg font-bold text-white bg-bg5 hover:bg-bg6 transition duration-300"
+                          >
+                            {loading ? (
+                              <div className="flex justify-center items-center">
+                                <svg
+                                  className="animate-spin h-5 w-5 mr-2 text-white"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                                Processing...
+                              </div>
+                            ) : (
+                              "Submit Payment"
+                            )}
+                          </button>
+                    
+                          {/* Back Button */}
+                          {selectedMethod && (
+                            <div className="mt-4 flex justify-start">
+                              <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
+                                <IoIosArrowBack className="text-white" />
+                              </button>
+                            </div>
+                          )}
+                                            </form>
+                        }
+                        
+                        </>
 
-          <div className="flex items-center space-x-3">
-            <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12" />
-            <h3 className="text-lg font-semibold">{selectedMethod.name}</h3>
-          </div>
-          <IoIosArrowDown className={`transition-transform ${paymentDropdown ? 'rotate-180' : ''}`} />
-        </div>
-      </div> */}
-      
-      {deposit_message && <p className="mt-3 p-2 border border-red-300 bg-red-50 text-red-500 rounded">{deposit_message}</p>}
-      
-      {/* Amount Input */}
-      <label className="text-sm mt-4 block">Amount (300৳ - 25,000৳)</label>
-      <div className="flex items-center border-[2px] border-gray-500 px-3 py-2 rounded-[5px]  mt-1">
-        <button type="button" className="text-gray-400 border-gray-500" onClick={() => setTransactionAmount(Math.max(500, transactionAmount - 100))}><FaMinus/></button>
-        <input
-          type="number"
-          className="w-full text-center bg-transparent outline-none text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          value={transactionAmount}
-          onChange={(e) => setTransactionAmount(e.target.value)}
-        />
-        <button type="button" className="text-gray-400" onClick={() => setTransactionAmount(Math.min(25000, transactionAmount + 100))}><FaPlus/></button>
-      </div>
-      
-      {/* Preset Amounts */}
-      <div className="flex space-x-2 mt-2">
-        {presetAmounts.map((value) => (
-          <div
-            key={value}
-            className={`flex-1 py-2 cursor-pointer text-center text-[12px] rounded-[5px] font-[500] transition ${transactionAmount == value ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-white'}`}
-            onClick={() => handlePresetAmount(value)}
-          >
-            ৳{value}
-          </div>
-        ))}
-      </div>
-      
-      {/* Bonus Selection */}
-      <label className="text-sm mt-4 block">Get Your Deposit Bonus</label>
 
-      <div className="relative  px-3 py-2 border-[2px] border-gray-600 rounded-[5px] cursor-pointer mt-1" onClick={() => setBonusDropdown(!bonusDropdown)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <img src={selectedBonus.img} alt={selectedBonus.name} className="w-8 h-8 rounded-full" />
-            <h3 className="text-[15px]">{selectedBonus.name}</h3>
-          </div>
-          <IoIosArrowDown className={`transition-transform ${bonusDropdown ? 'rotate-180' : ''}`} />
-        </div>
-        {bonusDropdown && (
-          <div className="absolute top-full left-0 w-full no-scrollbar bg-gray-800 rounded-lg mt-1 shadow-lg z-10 max-h-40 overflow-y-auto">
-            {bonuses.map((bonus, index) => (
-              <div key={index} className="flex items-center p-3 hover:bg-gray-700 cursor-pointer" onClick={() => { setSelectedBonus(bonus); setBonusDropdown(false); }}>
-                <img src={bonus.img} alt={bonus.name} className="w-8 h-8 rounded-full" />
-                <span className="ml-3 flex-1 text-[145x]">{bonus.name}</span>
-                {selectedBonus.name === bonus.name && <IoIosCheckmarkCircle className="text-yellow-500" />}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      {/* Account Number Input */}
-      {/* <label className="text-sm mt-4 block">Account number</label>
-      <input
-        type="text"
-        className="w-full p-2 mt-1 rounded bg-gray-800 border border-gray-700 text-white"
-        placeholder="Enter account number"
-        required
-      /> */}
-      
-      {/* Submit Button */}
-      <button
-        disabled={loading}
-        className="w-full mt-4 py-2 rounded-[5px] font-bold text-white bg-bg4 transition duration-300 hover:bg-bg5"
-      >
-        {loading ? "Processing..." : "Submit Payment"}
-      </button>
-      
-      {selectedMethod && (
-        <div className="mt-4 flex justify-start">
-          <button className="bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center" onClick={handledepositback}>
-            <IoIosArrowBack className="text-white" />
-          </button>
-        </div>
-      )}
-    </form>
+                      
+                        }
                   </>: <form onSubmit={handlewithdraw}>
                   <img src={selectedMethod.src} alt={selectedMethod.name} className="w-12 h-12 m-auto mb-2" />
                 <h3 className="text-center text-lg font-semibold mb-2">{selectedMethod.name}</h3>
